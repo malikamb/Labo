@@ -67,14 +67,13 @@ namespace Labo.BLL.Services
             userRepository.Update(user);
         }
 
-        public bool ExistsEmail(ExistsEmailDTO dto)
+        public bool Exists(SearchUserDTO dto)
         {
-            return userRepository.Any(u => u.Email.Equals(dto.Email, StringComparison.CurrentCultureIgnoreCase) && u.Id != dto.ExcludeId);
-        }
-
-        public bool ExistsUsername(ExistsUsernameDTO dto)
-        {
-            return userRepository.Any(u => u.Username.Equals(dto.Username, StringComparison.CurrentCultureIgnoreCase) && u.Id != dto.ExcludeId);
+            return userRepository.Any(u => 
+                (dto.Email == null || u.Email.Equals(dto.Email, StringComparison.CurrentCultureIgnoreCase))
+                && (dto.Username == null || u.Username.Equals(dto.Username, StringComparison.CurrentCultureIgnoreCase))
+                && u.Id != dto.ExcludeId
+            );
         }
     }
 }

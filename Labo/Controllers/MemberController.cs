@@ -35,20 +35,10 @@ namespace Labo.API.Controllers
             return NoContent();
         }
 
-        [HttpHead("existsEmail")]
-        public IActionResult ExistsEmail([FromQuery] ExistsEmailDTO dto)
+        [HttpHead]
+        public IActionResult Exists([FromQuery] SearchUserDTO dto)
         {
-            if (memberService.ExistsEmail(dto))
-            {
-                return NoContent();
-            }
-            return BadRequest();
-        }
-
-        [HttpHead("existsUsername")]
-        public IActionResult ExistUsername([FromQuery] ExistsUsernameDTO dto)
-        {
-            if (memberService.ExistsUsername(dto))
+            if (memberService.Exists(dto))
             {
                 return NoContent();
             }

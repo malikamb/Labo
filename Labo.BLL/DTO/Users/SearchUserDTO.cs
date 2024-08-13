@@ -2,12 +2,11 @@
 
 namespace Labo.BLL.DTO.Users
 {
-    public class ExistsEmailDTO
+    public class SearchUserDTO
     {
         [EmailAddress]
-        [Required]
-        public string Email { get; set; } = string.Empty;
-
+        public string? Email { get; set; } = string.Empty;
+        public string? Username { get; set; } = string.Empty;
         public Guid? ExcludeId { get; set; }
     }
 }

@@ -6,7 +6,6 @@ namespace Labo.BLL.Interfaces
     {
         Task AddAsync(MemberFormDTO dto);
         void ChangePassword(Guid id, ChangePasswordDTO dto);
-        bool ExistsEmail(ExistsEmailDTO dto);
-        bool ExistsUsername(ExistsUsernameDTO dto);
+        bool Exists(SearchUserDTO dto);
     }
 }
