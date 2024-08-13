@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace Labo.BLL.Exceptions
 {
-    public class TournamentRegistrationException: Exception
+    public class TournamentRegistrationException(string message) : Exception(message)
     {
-        public TournamentRegistrationException(string message)
-            : base(message) { }
     }
 }

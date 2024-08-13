@@ -1,20 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Labo.BLL.DTO.Tournaments
+﻿namespace Labo.BLL.DTO.Tournaments
 {
-    public class TournamentIndexDTO
+    public class TournamentIndexDTO(int total, IEnumerable<TournamentDTO> results)
     {
-        public TournamentIndexDTO(int total, IEnumerable<TournamentDTO> results)
-        {
-            Total = total;
-            Results = results;
-        }
-
-        public int Total { get; set; }
-        public IEnumerable<TournamentDTO> Results { get; set; }
+        public int Total { get; set; } = total;
+        public IEnumerable<TournamentDTO> Results { get; set; } = results;
     }
 }

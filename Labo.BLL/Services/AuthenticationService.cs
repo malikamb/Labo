@@ -1,24 +1,17 @@
 ﻿using Labo.BLL.DTO.Users;
 using Labo.BLL.Interfaces;
 using Labo.DL.Entities;
+using Labo.Utils.Password;
 using System.Security.Authentication;
-using ToolBox.Security.Utils;
 
 namespace Labo.BLL.Services
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService(IUserRepository userRepository) : IAuthenticationService
     {
-        private readonly IUserRepository _userRepository;
-
-        public AuthenticationService(IUserRepository userRepository, IMailer mailer)
-        {
-            _userRepository = userRepository;
-        }
-
         public UserDTO Login(LoginDTO dto)
         {
-            User? user = _userRepository.FindOne(u => !u.IsDeleted && (u.Username.ToLower() == dto.Username.ToLower() || u.Email.ToLower() == dto.Username.ToLower()));
-            if (user is null || !HashUtils.VerifyPassword(user.EncodedPassword, dto.Password, user.Salt))
+            User? user = userRepository.FindOne(u => !u.IsDeleted && (u.Username.Equals(dto.Username, StringComparison.CurrentCultureIgnoreCase) || u.Email.Equals(dto.Username, StringComparison.CurrentCultureIgnoreCase)));
+            if (user is null || !PasswordUtils.VerifyPassword(user.EncodedPassword, dto.Password, user.Salt))
             {
                 throw new AuthenticationException();
             }

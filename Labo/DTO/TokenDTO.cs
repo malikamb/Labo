@@ -2,15 +2,9 @@
 
 namespace Labo.API.DTO
 {
-    public class TokenDTO
+    public class TokenDTO(string token, UserDTO user)
     {
-        public TokenDTO(string token, UserDTO user)
-        {
-            Token = token;
-            User = user;
-        }
-
-        public string Token { get; set; }
-        public UserDTO User { get; set; }
+        public string Token { get; set; } = token;
+        public UserDTO User { get; set; } = user;
     }
 }

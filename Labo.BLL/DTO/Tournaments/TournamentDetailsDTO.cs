@@ -4,17 +4,11 @@ using Labo.DL.Entities;
 
 namespace Labo.BLL.DTO.Tournaments
 {
-    public class TournamentDetailsDTO : TournamentDTO
+    public class TournamentDetailsDTO(Tournament tournament) : TournamentDTO(tournament)
     {
-        public IEnumerable<UserDTO> Players { get; set; }
         public bool CanStart { get; set; }
         public bool CanValidateRound { get; set; }
-        public IEnumerable<MatchDTO> Matches { get; set; }
-        public TournamentDetailsDTO(Tournament tournament) : base(tournament)
-        {
-            Players = tournament.Players.Select(p => new UserDTO(p));
-            Matches = tournament.Matches.Select(p => new MatchDTO(p));
-        }
-
+        public IEnumerable<UserDTO> Players { get; set; } = tournament.Players.Select(p => new UserDTO(p));
+        public IEnumerable<MatchDTO> Matches { get; set; } = tournament.Matches.Select(p => new MatchDTO(p));
     }
 }

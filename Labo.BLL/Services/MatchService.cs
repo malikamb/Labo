@@ -7,31 +7,22 @@ using Labo.DL.Enums;
 
 namespace Labo.BLL.Services
 {
-    public class MatchService : IMatchService
+    public class MatchService(IMatchRepository matchRepository, ITournamentRepository tournamentRepository) : IMatchService
     {
-        private readonly IMatchRepository _matchRepository;
-        private readonly ITournamentRepository _tournamentRepository;
-
-        public MatchService(IMatchRepository matchRepository, ITournamentRepository tournamentRepository)
-        {
-            _matchRepository = matchRepository;
-            _tournamentRepository = tournamentRepository;
-        }
-
         public IEnumerable<MatchDTO> Get(Guid tournamentId, int? round)
         {
-            Tournament? tournament = _tournamentRepository.FindOne(tournamentId);
+            Tournament? tournament = tournamentRepository.FindOne(tournamentId);
             if (tournament is null)
             {
                 throw new KeyNotFoundException();
             }
-            return _matchRepository.FindWithPlayersByTournamentAndRound(tournamentId, round ?? tournament.CurrentRound)
+            return matchRepository.FindWithPlayersByTournamentAndRound(tournamentId, round ?? tournament.CurrentRound)
                 .Select(m => new MatchDTO(m));
         }
 
         public void UpdateResult(int id, MatchResult result)
         {
-            Match? match = _matchRepository.FindOneWithTournament(id);
+            Match? match = matchRepository.FindOneWithTournament(id);
             if (match is null)
             {
                 throw new KeyNotFoundException();
@@ -45,7 +36,7 @@ namespace Labo.BLL.Services
                 throw new TournamentException("Cannot update a match if the round has ended");
             }
             match.Result = result;
-            _matchRepository.Update(match);
+            matchRepository.Update(match);
         }
 
     }

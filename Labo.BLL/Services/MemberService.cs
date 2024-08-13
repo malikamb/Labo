@@ -3,19 +3,15 @@ using Labo.BLL.Interfaces;
 using Labo.BLL.Mappers;
 using Labo.DL.Entities;
 using Labo.DL.Enums;
+using Labo.Utils.Password;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Authentication;
 using System.Transactions;
-using ToolBox.Security.Utils;
 
 namespace Labo.BLL.Services
 {
-    public class MemberService : IMemberService
+    public class MemberService(IMailer mailer, IUserRepository userRepository) : IMemberService
     {
-        private readonly IMailer _mailer;
-        private readonly IUserRepository _userRepository;
-        private readonly IPasswordGenerator _passwordGenerator;
-
         private readonly string RegisterMailTemplate = @"
             <h1>Your registration for Mr Checkmate's plateform</h1>
             <div>
@@ -25,36 +21,29 @@ namespace Labo.BLL.Services
             </div>
         ";
 
-        public MemberService(IMailer mailer, IUserRepository userRepository, IPasswordGenerator passwordGenerator)
-        {
-            _mailer = mailer;
-            _userRepository = userRepository;
-            _passwordGenerator = passwordGenerator;
-        }
-
         public async Task AddAsync(MemberFormDTO dto)
         {
-            if (_userRepository.Any(u => u.Username.ToLower() == dto.Username.ToLower()))
+            if (userRepository.Any(u => u.Username.Equals(dto.Username, StringComparison.CurrentCultureIgnoreCase)))
             {
                 throw new ValidationException("This username already exists") { Source = nameof(dto.Username) };
             }
-            if (_userRepository.Any(u => u.Email.ToLower() == dto.Email.ToLower()))
+            if (userRepository.Any(u => u.Email.ToLower() == dto.Email.ToLower()))
             {
                 throw new ValidationException("This email already exists") { Source = nameof(dto.Email) };
             }
-            string password = _passwordGenerator.Random(8);
+            string password = PasswordUtils.Random(8);
             User u = dto.ToEntity();
             u.Elo = dto.Elo ?? 1200;
             u.Role = UserRole.Player;
             u.Salt = Guid.NewGuid();
-            u.EncodedPassword = HashUtils.HashPassword(password, u.Salt);
+            u.EncodedPassword = PasswordUtils.HashPassword(password, u.Salt);
             u.IsDeleted = false;
 
 
             using TransactionScope t = new(TransactionScopeAsyncFlowOption.Enabled);
             {
-                _userRepository.Add(u);
-                await _mailer.SendAsync(
+                userRepository.Add(u);
+                await mailer.SendAsync(
                     "New Registration",
                     RegisterMailTemplate
                         .Replace("__username__", u.Username)
@@ -69,23 +58,23 @@ namespace Labo.BLL.Services
 
         public void ChangePassword(Guid id, ChangePasswordDTO dto)
         {
-            User? user = _userRepository.FindOne(id);
-            if (user is null || !HashUtils.VerifyPassword(user.EncodedPassword, dto.OldPassword, user.Salt))
+            User? user = userRepository.FindOne(id);
+            if (user is null || !PasswordUtils.VerifyPassword(user.EncodedPassword, dto.OldPassword, user.Salt))
             {
                 throw new AuthenticationException();
             }
-            user.EncodedPassword = HashUtils.HashPassword(dto.Password, user.Salt);
-            _userRepository.Update(user);
+            user.EncodedPassword = PasswordUtils.HashPassword(dto.Password, user.Salt);
+            userRepository.Update(user);
         }
 
         public bool ExistsEmail(ExistsEmailDTO dto)
         {
-            return _userRepository.Any(u => u.Email.ToLower() == dto.Email.ToLower() && u.Id != dto.ExcludeId);
+            return userRepository.Any(u => u.Email.Equals(dto.Email, StringComparison.CurrentCultureIgnoreCase) && u.Id != dto.ExcludeId);
         }
 
         public bool ExistsUsername(ExistsUsernameDTO dto)
         {
-            return _userRepository.Any(u => u.Username.ToLower() == dto.Username.ToLower() && u.Id != dto.ExcludeId);
+            return userRepository.Any(u => u.Username.Equals(dto.Username, StringComparison.CurrentCultureIgnoreCase) && u.Id != dto.ExcludeId);
         }
     }
 }

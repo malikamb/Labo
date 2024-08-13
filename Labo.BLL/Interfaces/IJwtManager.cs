@@ -1,6 +1,6 @@
 ﻿namespace Labo.BLL.Interfaces
 {
-    public interface IJwtService
+    public interface IJwtManager
     {
         string CreateToken(string identifier, string email, string role);
     }

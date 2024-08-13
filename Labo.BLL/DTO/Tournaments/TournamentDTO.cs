@@ -3,39 +3,22 @@ using Labo.DL.Enums;
 
 namespace Labo.BLL.DTO.Tournaments
 {
-    public class TournamentDTO
+    public class TournamentDTO(Tournament tournament)
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string? Location { get; set; }
-        public int MinPlayers { get; set; }
-        public int MaxPlayers { get; set; }
-        public int? EloMin { get; set; }
-        public int? EloMax { get; set; }
-        public IEnumerable<TournamentCategory> Categories { get; set; }
-        public bool WomenOnly { get; set; }
-        public DateTime EndOfRegistrationDate { get; set; }
-        public int Count { get; set; }
+        public Guid Id { get; set; } = tournament.Id;
+        public string Name { get; set; } = tournament.Name;
+        public string? Location { get; set; } = tournament.Location;
+        public int MinPlayers { get; set; } = tournament.MinPlayers;
+        public int MaxPlayers { get; set; } = tournament.MaxPlayers;
+        public int? EloMin { get; set; } = tournament.EloMin;
+        public int? EloMax { get; set; } = tournament.EloMax;
+        public bool WomenOnly { get; set; } = tournament.WomenOnly;
+        public DateTime EndOfRegistrationDate { get; set; } = tournament.EndOfRegistrationDate;
+        public int Count { get; set; } = tournament.Players.Count;
         public bool CanRegister { get; set; }
         public bool IsRegistered { get; set; }
-        public TournamentStatus Status { get; set; }
-        public int CurrentRound { get; set; }
-
-        public TournamentDTO(Tournament tournament)
-        {
-            Id = tournament.Id;
-            Name = tournament.Name;
-            MinPlayers = tournament.MinPlayers;
-            MaxPlayers = tournament.MaxPlayers;
-            EloMin = tournament.EloMin;
-            EloMax = tournament.EloMax;
-            Categories = Enum.GetValues<TournamentCategory>().Where(v => tournament.Categories.HasFlag(v));
-            EndOfRegistrationDate = tournament.EndOfRegistrationDate;
-            Location = tournament.Location;
-            WomenOnly = tournament.WomenOnly;
-            Status = tournament.Status;
-            CurrentRound = tournament.CurrentRound;
-            Count = tournament.Players.Count;
-        }
+        public int CurrentRound { get; set; } = tournament.CurrentRound;
+        public TournamentStatus Status { get; set; } = tournament.Status;
+        public IEnumerable<TournamentCategory> Categories { get; set; } = Enum.GetValues<TournamentCategory>().Where(v => tournament.Categories.HasFlag(v));
     }
 }

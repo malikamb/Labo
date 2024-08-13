@@ -8,24 +8,13 @@ using Labo.BLL.Interfaces;
 
 namespace Labo.BLL.Services
 {
-    public class TournamentService: ITournamentService
+    public class TournamentService(ITournamentRepository tournamentRepository, IUserRepository userRepository, IMailer mailer) : ITournamentService
     {
-        private readonly ITournamentRepository _tournamentRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly IMailer _mailer;
-
-        public TournamentService(ITournamentRepository tournamentRepository, IUserRepository userRepository, IMailer mailer)
-        {
-            _tournamentRepository = tournamentRepository;
-            _userRepository = userRepository;
-            _mailer = mailer;
-        }
-
         public IEnumerable<TournamentDTO> Find(TournamentSearchDTO criteria, Guid userId)
         {
-            User? u = _userRepository.FindOne(userId);
+            User? u = userRepository.FindOne(userId);
 
-            return _tournamentRepository.FindWithPlayersByCriteriaOrderByCreationDateDesc(
+            return tournamentRepository.FindWithPlayersByCriteriaOrderByCreationDateDesc(
                 criteria.Name,
                 criteria.Category,
                 criteria.Statuses,
@@ -45,7 +34,7 @@ namespace Labo.BLL.Services
 
         public int Count(TournamentSearchDTO criteria)
         {
-            return _tournamentRepository.CountByCriteria(
+            return tournamentRepository.CountByCriteria(
                 criteria.Name, 
                 criteria.Category,
                 criteria.Statuses,
@@ -55,8 +44,8 @@ namespace Labo.BLL.Services
 
         public TournamentDetailsDTO GetWithPlayers(Guid tournamentId, Guid userId)
         {
-            User? u = _userRepository.FindOne(userId);
-            Tournament? tournament = _tournamentRepository.FindOneWithPlayersAndMatches(tournamentId);
+            User? u = userRepository.FindOne(userId);
+            Tournament? tournament = tournamentRepository.FindOneWithPlayersAndMatches(tournamentId);
             if (tournament is null)
             {
                 throw new KeyNotFoundException();
@@ -85,13 +74,13 @@ namespace Labo.BLL.Services
             t.Status = TournamentStatus.WaitingForPlayers;
             t.CreationDate = DateTime.Now;
             t.UpdateDate = t.CreationDate;
-            Tournament newTournament = _tournamentRepository.Add(t);
-            IEnumerable<User> canParticipatePlayers = _userRepository
+            Tournament newTournament = tournamentRepository.Add(t);
+            IEnumerable<User> canParticipatePlayers = userRepository
                 .Find(u => CanRegister(u, newTournament));
 
             try
             {
-                _mailer.SendAsync(
+                mailer.SendAsync(
                     "New Tournament",
                     $"<p>A new tournmaent {t.Name} is created</p>",
                     canParticipatePlayers.Select(p => p.Email).ToArray()
@@ -104,7 +93,7 @@ namespace Labo.BLL.Services
 
         public Guid Remove(Guid id)
         {
-            Tournament? t = _tournamentRepository.FindOneWithPlayers(id);
+            Tournament? t = tournamentRepository.FindOneWithPlayers(id);
             if (t is null)
             {
                 throw new KeyNotFoundException();
@@ -113,11 +102,11 @@ namespace Labo.BLL.Services
             {
                 throw new TournamentException("Cannot remove a tournament that has already started");
             }
-            _tournamentRepository.Remove(t);
+            tournamentRepository.Remove(t);
 
             try
             {
-                _mailer.SendAsync(
+                mailer.SendAsync(
                     "Tournament canceled",
                     $"<p>The tournament {t.Name} has been canceled</p>",
                     t.Players.Select(p => p.Email).ToArray()
@@ -131,7 +120,7 @@ namespace Labo.BLL.Services
 
         public void Start(Guid id)
         {
-            Tournament? t = _tournamentRepository.FindOneWithPlayers(id);
+            Tournament? t = tournamentRepository.FindOneWithPlayers(id);
             if (t is null)
             {
                 throw new KeyNotFoundException();
@@ -141,12 +130,12 @@ namespace Labo.BLL.Services
             t.Status = TournamentStatus.InProgress;
             t.CurrentRound = 1;
             GenerateMatches(t);
-            _tournamentRepository.Update(t);
+            tournamentRepository.Update(t);
         }
 
         public void ValidateRound(Guid id)
         {
-            Tournament? t = _tournamentRepository.FindOneWithPlayersAndMatches(id);
+            Tournament? t = tournamentRepository.FindOneWithPlayersAndMatches(id);
             if (t is null)
             {
                 throw new KeyNotFoundException();
@@ -161,14 +150,14 @@ namespace Labo.BLL.Services
                 t.CurrentRound++;
             }
             t.UpdateDate = DateTime.Now;
-            _tournamentRepository.Update(t);
+            tournamentRepository.Update(t);
 
         }
 
         public void Register(Guid userId, Guid tournamentId)
         {
-            User? player = _userRepository.FindOne(userId);
-            Tournament? tournament = _tournamentRepository.FindOneWithPlayers(tournamentId);
+            User? player = userRepository.FindOne(userId);
+            Tournament? tournament = tournamentRepository.FindOneWithPlayers(tournamentId);
             if (tournament == null)
             {
                 throw new KeyNotFoundException();
@@ -178,13 +167,13 @@ namespace Labo.BLL.Services
                 throw new UnauthorizedAccessException();
             }
             CheckCanRegister(player, tournament);
-            _tournamentRepository.AddPlayer(tournament, player);
+            tournamentRepository.AddPlayer(tournament, player);
         }
 
         public void Unregister(Guid userId, Guid tournamentId)
         {
-            User? player = _userRepository.FindOne(userId);
-            Tournament? tournament = _tournamentRepository.FindOneWithPlayers(tournamentId);
+            User? player = userRepository.FindOne(userId);
+            Tournament? tournament = tournamentRepository.FindOneWithPlayers(tournamentId);
             if (tournament == null)
             {
                 throw new KeyNotFoundException();
@@ -201,7 +190,7 @@ namespace Labo.BLL.Services
             {
                 throw new TournamentRegistrationException("This player is not in the tournament");
             }
-            _tournamentRepository.RemovePlayer(tournament, player);
+            tournamentRepository.RemovePlayer(tournament, player);
         }
 
         private static bool CanRegister(User player, Tournament tournament)

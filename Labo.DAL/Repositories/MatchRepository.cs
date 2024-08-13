@@ -6,15 +6,11 @@ using ToolBox.EF.Repository;
 
 namespace Labo.DAL.Repositories
 {
-    public class MatchRepository : RepositoryBase<Match>, IMatchRepository
+    public class MatchRepository(TournamentContext context) : RepositoryBase<Match>(context), IMatchRepository
     {
-        public MatchRepository(TournamentContext context) : base(context)
-        {
-        }
-
         public IEnumerable<Match> FindWithPlayersByTournamentAndRound(Guid tournamentId, int round)
         {
-            return _entities
+            return Entities
                 .Include(m => m.White)
                 .Include(m => m.Black)
                 .Where(m => m.TournamentId == tournamentId && m.Round == round);
@@ -22,7 +18,7 @@ namespace Labo.DAL.Repositories
 
         public Match? FindOneWithTournament(int id)
         {
-            return _entities.Include(m => m.Tournament).FirstOrDefault(m => m.Id == id);
+            return Entities.Include(m => m.Tournament).FirstOrDefault(m => m.Id == id);
         }
     }
 }

@@ -3,55 +3,49 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace ToolBox.EF.Repository
 {
-    public abstract class RepositoryBase 
+    public abstract class RepositoryBase(DbContext context)
     {
-        protected readonly DbContext _context;
-        protected RepositoryBase(DbContext context)
-        {
-            _context = context;
-        }
+        protected readonly DbContext _context = context;
     }
 
-    public abstract class RepositoryBase<TEntity> : RepositoryBase, IRepository<TEntity> 
+    public abstract class RepositoryBase<TEntity>(DbContext context) : RepositoryBase(context), IRepository<TEntity> 
         where TEntity : class
     {
-        protected DbSet<TEntity> _entities => _context.Set<TEntity>();
-
-        public RepositoryBase(DbContext context): base(context) { }
+        protected DbSet<TEntity> Entities => _context.Set<TEntity>();
 
         public virtual IEnumerable<TEntity> Find()
         {
-            return _entities;
+            return Entities;
         }
 
         public virtual IEnumerable<TEntity> Find(Func<TEntity, bool> predicate)
         {
-            return _entities.Where(predicate);
+            return Entities.Where(predicate);
         }
 
         public virtual int Count()
         {
-            return _entities.Count();
+            return Entities.Count();
         }
 
         public virtual int Count(Func<TEntity, bool> predicate)
         {
-            return _entities.Where(predicate).Count();
+            return Entities.Where(predicate).Count();
         }
 
         public virtual TEntity? FindOne(params object[] ids)
         {
-            return _entities.Find(ids);
+            return Entities.Find(ids);
         }
 
         public virtual TEntity? FindOne(Func<TEntity, bool> predicate)
         {
-            return _entities.FirstOrDefault(predicate);
+            return Entities.FirstOrDefault(predicate);
         }
 
         public bool Any(Func<TEntity, bool> predicate)
         {
-            return _entities.Any(predicate);
+            return Entities.Any(predicate);
         }
 
         public virtual TEntity Add(TEntity entity)

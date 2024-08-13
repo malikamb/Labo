@@ -1,11 +1,6 @@
 ﻿using Labo.BLL.Validators;
 using Labo.DL.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Labo.BLL.DTO.Tournaments
 {
@@ -36,7 +31,7 @@ namespace Labo.BLL.DTO.Tournaments
 
         [Required]
         [MinLength(1)]
-        public IEnumerable<TournamentCategory> Categories { get; set; } = Enumerable.Empty<TournamentCategory>();
+        public IEnumerable<TournamentCategory> Categories { get; set; } = [];
 
         [Required]
         public bool WomenOnly { get; set; }

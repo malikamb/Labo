@@ -35,11 +35,13 @@ namespace Labo.IL.Services
 
         private MailMessage CreateMail(string subject, string message, string[] to)
         {
-            MailMessage mailMessage = new MailMessage();
-            mailMessage.IsBodyHtml = true;
-            mailMessage.From = new MailAddress(_config.Username);
-            mailMessage.Subject = subject;
-            mailMessage.Body = message;
+            MailMessage mailMessage = new()
+            {
+                IsBodyHtml = true,
+                From = new MailAddress(_config.Username),
+                Subject = subject,
+                Body = message
+            };
 #if DEBUG
             mailMessage.To.Add(_config.TestMail);
 #else

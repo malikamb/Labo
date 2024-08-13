@@ -4,10 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Labo.DAL.Contexts
 {
-    public class TournamentContext: DbContext
+    public class TournamentContext(DbContextOptions options) : DbContext(options)
     {
-        public TournamentContext(DbContextOptions options): base(options) { }
-
         public DbSet<Tournament> Tournaments => Set<Tournament>();
         public DbSet<User> Users => Set<User>();
 

@@ -1,7 +1,7 @@
 ﻿using Labo.DL.Entities;
+using Labo.Utils.Password;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ToolBox.Security.Utils;
 
 namespace Labo.DAL.Configurations
 {
@@ -41,7 +41,7 @@ namespace Labo.DAL.Configurations
                 Elo = 1800,
                 IsDeleted = false,
                 Salt = salt,
-                EncodedPassword = HashUtils.HashPassword("1234", salt)
+                EncodedPassword = PasswordUtils.HashPassword("1234", salt)
             };
 
             #if DEBUG
@@ -57,7 +57,7 @@ namespace Labo.DAL.Configurations
                 Elo = 1500,
                 IsDeleted = false,
                 Salt = salt,
-                EncodedPassword = HashUtils.HashPassword("1234", salt)
+                EncodedPassword = PasswordUtils.HashPassword("1234", salt)
             };
 
             salt = Guid.NewGuid();
@@ -72,7 +72,7 @@ namespace Labo.DAL.Configurations
                 Elo = 1800,
                 IsDeleted = false,
                 Salt = salt,
-                EncodedPassword = HashUtils.HashPassword("1234", salt)
+                EncodedPassword = PasswordUtils.HashPassword("1234", salt)
             };
 
             salt = Guid.NewGuid();
@@ -87,7 +87,7 @@ namespace Labo.DAL.Configurations
                 Elo = 1200,
                 IsDeleted = false,
                 Salt = salt,
-                EncodedPassword = HashUtils.HashPassword("1234", salt)
+                EncodedPassword = PasswordUtils.HashPassword("1234", salt)
             };
             salt = Guid.NewGuid();
 
@@ -102,7 +102,7 @@ namespace Labo.DAL.Configurations
                 Elo = 1800,
                 IsDeleted = false,
                 Salt = salt,
-                EncodedPassword = HashUtils.HashPassword("1234", salt)
+                EncodedPassword = PasswordUtils.HashPassword("1234", salt)
             };
             salt = Guid.NewGuid();
             yield return new User
@@ -116,7 +116,7 @@ namespace Labo.DAL.Configurations
                 Elo = 1800,
                 IsDeleted = false,
                 Salt = salt,
-                EncodedPassword = HashUtils.HashPassword("1234", salt)
+                EncodedPassword = PasswordUtils.HashPassword("1234", salt)
             };
             salt = Guid.NewGuid();
             yield return new User
@@ -130,7 +130,7 @@ namespace Labo.DAL.Configurations
                 Elo = 1800,
                 IsDeleted = false,
                 Salt = salt,
-                EncodedPassword = HashUtils.HashPassword("1234", salt)
+                EncodedPassword = PasswordUtils.HashPassword("1234", salt)
             };
             #endif
         }

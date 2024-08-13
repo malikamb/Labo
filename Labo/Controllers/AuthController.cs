@@ -8,35 +8,15 @@ namespace Labo.API.Controllers
 {
     [Route("api")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController(IAuthenticationService authenticationService, IJwtManager jwtManager) : ControllerBase
     {
-        private readonly IAuthenticationService _authenticationService;
-        private readonly IJwtService _jwtService;
-
-        public AuthController(IAuthenticationService authenticationService, IJwtService jwtService)
-        {
-            _authenticationService = authenticationService;
-            _jwtService = jwtService;
-        }
-
         [HttpPost("login")]
         [Produces(typeof(TokenDTO))]
         public IActionResult Login(LoginDTO dto)
         {
-            try
-            {
-                UserDTO connectedUser = _authenticationService.Login(dto);
-                string token = _jwtService.CreateToken(connectedUser.Id.ToString(), connectedUser.Email, connectedUser.Role.ToString());
-                return Ok(new TokenDTO(token, connectedUser));
-            }
-            catch (AuthenticationException)
-            {
-                return BadRequest("Bad credentials");
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            UserDTO connectedUser = authenticationService.Login(dto);
+            string token = jwtManager.CreateToken(connectedUser.Id.ToString(), connectedUser.Email, connectedUser.Role.ToString());
+            return Ok(new TokenDTO(token, connectedUser));
         }
     }
 }
