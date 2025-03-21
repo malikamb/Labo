@@ -15,6 +15,7 @@
                             <input pInputText formControlName="email">
                             <label>Email</label>
                         </p-float-label>
+                        <app-form-error [control]="registerForm.get('email')!"></app-form-error>
                     </div>
                     <div class="col-6">
                         <p-floatLabel>

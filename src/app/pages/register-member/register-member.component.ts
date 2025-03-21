@@ -5,16 +5,17 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { Calendar } from 'primeng/calendar';
 import { Card } from 'primeng/card';
 import { Fieldset } from 'primeng/fieldset';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Select } from 'primeng/select';
 import { CommonModule } from '@angular/common';
 import { MemberService } from '../../services/member.service';
-import { finalize } from 'rxjs';
+import { catchError, finalize, map, of } from 'rxjs';
+import { FormErrorComponent } from "../../components/form-error/form-error.component";
 
 @Component({
-  imports: [CommonModule, Button, InputText, FloatLabel, Calendar, Card, Fieldset, ReactiveFormsModule, Select],
+  imports: [CommonModule, Button, InputText, FloatLabel, Calendar, Card, Fieldset, ReactiveFormsModule, Select, FormErrorComponent],
   templateUrl: './register-member.component.html',
   styleUrl: './register-member.component.scss'
 })
@@ -39,11 +40,20 @@ export class RegisterMemberComponent {
 
   registerForm = this.fb.group({
     username: [null, [Validators.required, Validators.maxLength(100)]],
-    email: [null, [Validators.required, Validators.maxLength(400), Validators.email]],
+    email: [null, [Validators.required, Validators.maxLength(400), Validators.email], [
+      (control: AbstractControl) => this.memberService.exists(control.value).pipe(
+        map(() => ({ exist: true })),
+        catchError(() => of(null))
+      )
+    ]],
     birthDate: [null, [Validators.required, /* Valider la date de naissance */]],
     elo: [null, [Validators.min(0), Validators.max(3000)]],
     gender: [null, [Validators.required]]
   });
+
+  constructor() {
+    const o$ = of(42).pipe(map(nb => nb > 18 ? 'majeur' : 'mineur'))
+  }
 
   submit() {
     if(this.registerForm.invalid) {
