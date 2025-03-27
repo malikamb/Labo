@@ -1,32 +1,32 @@
 <form [formGroup]="registerForm" (submit)="submit()">
     <p-card>
         <ng-template #title>
-            Ajouter un membre
+            Nouveau Membre
         </ng-template>
             <div class="grid">
                     <div class="col-6">
                         <p-float-label>
                             <input pInputText formControlName="username">
-                            <label>Pseudo</label>
+                            <label>Pseudo*</label>
                         </p-float-label>
                     </div>
                     <div class="col-6">
                         <p-float-label>
                             <input pInputText formControlName="email">
-                            <label>Email</label>
+                            <label>Email*</label>
                         </p-float-label>
                         <app-form-error [control]="registerForm.get('email')!"></app-form-error>
                     </div>
                     <div class="col-6">
                         <p-floatLabel>
                             <input pInputText type="number" formControlName="elo">
-                            <label>Elo</label>
+                            <label>ELO (0-3000)</label>
                         </p-floatLabel>
                     </div>
                     <div class="col-6">
                         <p-floatLabel>
                             <p-calendar styleClass="w-full" formControlName="birthDate"></p-calendar>
-                            <label>Date de naissance</label>
+                            <label>Date de naissance*</label>
                         </p-floatLabel>
                     </div>
                     <div class="col-6">
@@ -45,7 +45,7 @@
             <p-button type="submit" [disabled]="isLoading" 
                                     [loading]="isLoading"
                                     loadingIcon="pi pi-cog"
-                                    label="Sauver"></p-button>
+                                    label="Sauvegarder"></p-button>
         </ng-template>
     </p-card>
 </form>

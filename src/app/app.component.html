@@ -1,5 +1,54 @@
-<router-outlet></router-outlet>
+<header>
+    <div class="menu-container">
+        <div class="menu-icon" (click)="toggleMenu()" >
+            @if(isOpen) {
+                <i class="pi pi-times"></i>
+            } @else {
+                <i class="pi pi-bars"></i>
+            }
+        </div>
+    </div>
 
+    <h2>Gestion Tournoi</h2>
+
+    <a href="auth/login">Se connecter</a>
+    <!-- <nav class="menu">
+        <ul>
+            <li routerLink="member/profile" routerLinkActive="active">
+                <a><i class="pi pi-user"></i></a>
+            </li>
+            <li>
+                <a><i class="pi pi-power-off"></i></a>
+            </li>
+        </ul>
+    </nav> -->
+</header>
+@if(isOpen) {
+
+    <nav class="menu-principal">
+        <ul>
+            <li>
+                <a routerLink="home"><i class="pi pi-home"></i>Accueil</a>
+            </li>
+            <li>
+                <i class="pi pi-calendar"></i>Tournois<i class="pi pi-caret-down"></i>
+            </li>
+            <li>
+                <a routerLink="tournament/index">Index</a>
+            </li>
+            <li>
+                <a routerLink="tournament/add" routerLinkActive="active">Nouveau</a>
+            </li>
+            <li routerLink="register/member" routerLinkActive="active">
+                <a><i class="pi pi-user-plus"></i>Nouveau membre</a>
+            </li>
+        </ul>
+    </nav>
+
+}
+
+<router-outlet></router-outlet>
+<footer>© 2022 - BSTORM</footer>
 
 
 <p-toast></p-toast>

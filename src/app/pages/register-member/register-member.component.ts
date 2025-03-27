@@ -15,7 +15,7 @@ import { catchError, finalize, map, of } from 'rxjs';
 import { FormErrorComponent } from "../../components/form-error/form-error.component";
 
 @Component({
-  imports: [CommonModule, Button, InputText, FloatLabel, Calendar, Card, Fieldset, ReactiveFormsModule, Select, FormErrorComponent],
+  imports: [CommonModule, Button, InputText, FloatLabel, Calendar, Card, ReactiveFormsModule, Select, FormErrorComponent],
   templateUrl: './register-member.component.html',
   styleUrl: './register-member.component.scss'
 })
@@ -32,7 +32,7 @@ export class RegisterMemberComponent {
   isLoading = false;
 
   genders = [
-    { label: 'Aucun', value: null },
+    { label: 'Genre*', value: null },
     { label: 'Fille', value: 0 },
     { label: 'Garçon', value: 1 },
     { label: 'Autre', value: 2 },

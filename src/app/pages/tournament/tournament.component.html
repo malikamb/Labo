@@ -1,0 +1,70 @@
+<form [formGroup]="tournamentForm" (submit)="submit()">
+    <p-card>
+        <a href="tournament/index">Retour à l'index</a>
+        <ng-template #title>
+            Nouveau Tournoi
+        </ng-template>
+            <div class="grid">
+                    <div class="col-6">
+                        <p-float-label>
+                            <input pInputText formControlName="name">
+                            <label>Nom*</label>
+                        </p-float-label>
+                    </div>
+                    <div class="col-6">
+                        <p-float-label>
+                            <input pInputText formControlName="location">
+                            <label>Lieu</label>
+                        </p-float-label>
+                    </div>
+                    <div class="col-6">
+                        <p-floatLabel>
+                            <input pInputText type="number" formControlName="player">
+                            <label>Nombre minimum de joueurs (2-16)*</label>
+                        </p-floatLabel>
+                    </div>
+                    <div class="col-6">
+                        <p-floatLabel>
+                            <input pInputText type="number" formControlName="player">
+                            <label>Nombre maximum de joueurs (2-16)*</label>
+                        </p-floatLabel>
+                    </div>
+                    <div class="col-6">
+                        <p-floatLabel>
+                            <input pInputText type="number" formControlName="elo">
+                            <label>ELO minimum (0-3000)</label>
+                        </p-floatLabel>
+                    </div>
+                    <div class="col-6">
+                        <p-floatLabel>
+                            <input pInputText type="number">
+                            <label>ELO maximum (0-3000)</label>
+                        </p-floatLabel>
+                    </div>
+                    <div class="col-6">
+                        <p-floatLabel>
+                            <p-toggleswitch formControlName="womenOnly"></p-toggleswitch>
+                            <label>Reservé aux filles</label>
+                        </p-floatLabel>
+                    </div>
+                    </div>
+                    <div class="col-6">
+                        <p-floatLabel>
+                            <p-select [options]="categories"
+                                    formControlName="category"
+                                    styleClass="w-full"
+                                    optionLabel="label"
+                                    optionValue="value"
+                                    emptyMessage="Aucun"></p-select>
+                        </p-floatLabel>
+                    </div>
+                    <div class="col-6">
+                        <p-floatLabel>
+                            <p-calendar styleClass="w-full" formControlName="registrationEndDate"></p-calendar>
+                        </p-floatLabel>
+                    </div>
+        <ng-template #footer>
+            <p-button type="submit" label="Sauvegarder"></p-button>
+        </ng-template>
+    </p-card>
+</form>

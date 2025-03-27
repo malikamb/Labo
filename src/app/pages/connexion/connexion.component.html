@@ -1,0 +1,26 @@
+<form [formGroup]="ConnexionForm" (submit)="submit()">
+    <p-card>
+        <ng-template #title>
+            Connexion
+        </ng-template>
+            <div class="grid">
+                <div class="col-6">
+                    <p-float-label>
+                        <input pInputText formControlName="username">
+                        <label>Username</label>
+                    </p-float-label>
+                </div>
+                <div class="col-6">
+                    <p-float-label>
+                        <label>Password</label>
+                        <input pInputText formControlName="Password">
+                    </p-float-label>
+                </div>
+            </div>
+        <ng-template #footer>
+            <p-button type="submit" label="Se connecter"></p-button>
+        </ng-template>
+    </p-card>
+</form>
+
+
